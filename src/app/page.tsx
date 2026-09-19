@@ -1,10 +1,8 @@
-import { NavBar } from "@/components/nav-bar";
 import { WikiCard } from "@/components/wiki-card";
 
 export default function Home() {
   return (
     <div>
-      <NavBar />
       <main className="max-w-2xl mx-auto mt-10 flex flex-col gap-6">
         <WikiCard
           title="Complete Intro to React"
