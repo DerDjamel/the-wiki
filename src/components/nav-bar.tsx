@@ -5,8 +5,11 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { auth } from "@/lib/auth/server";
+import { LogoutButton } from "./logout-button";
 
-export function NavBar() {
+export async function NavBar() {
+  const { data: session } = await auth.getSession();
   return (
     <nav className="w-full border-b bg-white/80 backdrop-blur supports-backdrop-filter:bg-white/60 sticky top-0 z-50">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -20,16 +23,27 @@ export function NavBar() {
         </div>
         <NavigationMenu>
           <NavigationMenuList className="flex items-center gap-2">
-            <NavigationMenuItem>
-              <Button variant="outline">
-                <Link href="/signin">Sign In</Link>
-              </Button>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Button>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </NavigationMenuItem>
+            {session?.user ? (
+              <>
+                <NavigationMenuItem>
+                  <Button variant="outline">{session.user.name}</Button>
+                </NavigationMenuItem>
+                <LogoutButton></LogoutButton>
+              </>
+            ) : (
+              <>
+                <NavigationMenuItem>
+                  <Button variant="outline">
+                    <Link href="/auth/sign-in">Sign In</Link>
+                  </Button>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Button>
+                    <Link href="/auth/sign-up">Sign Up</Link>
+                  </Button>
+                </NavigationMenuItem>
+              </>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
       </div>

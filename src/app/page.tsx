@@ -1,6 +1,8 @@
 import { WikiCard } from "@/components/wiki-card";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
   return (
     <div>
       <main className="max-w-2xl mx-auto mt-10 flex flex-col gap-6">
