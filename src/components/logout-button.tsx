@@ -1,19 +1,22 @@
 "use client";
-import { authClient } from "@/lib/auth/client";
 import { Button } from "./ui/button";
 import { NavigationMenuItem } from "./ui/navigation-menu";
+import { logout } from "@/app/auth/actions";
+import { useTransition } from "react";
 
 export function LogoutButton() {
+  const [isPending, startTransition] = useTransition();
   return (
     <NavigationMenuItem>
       <Button
         variant="default"
         onClick={async () => {
-          await authClient.signOut();
-          window.location.href = "/";
+          startTransition(async () => {
+            await logout();
+          });
         }}
       >
-        Logout
+        {isPending ? "Logging out..." : "Logout"}
       </Button>
     </NavigationMenuItem>
   );
