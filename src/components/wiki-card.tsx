@@ -1,11 +1,11 @@
 import Link from "next/link";
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 
 interface WikiCardProps {
@@ -16,7 +16,13 @@ interface WikiCardProps {
   href: string;
 }
 
-export function WikiCard({ title, author, date, summary, href }: WikiCardProps) {
+export function WikiCard({
+  title,
+  author,
+  date,
+  summary,
+  href,
+}: WikiCardProps) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -31,7 +37,10 @@ export function WikiCard({ title, author, date, summary, href }: WikiCardProps) 
         <CardDescription>{summary}</CardDescription>
       </CardContent>
       <CardFooter className="pt-2">
-        <Link href={href} className="text-blue-600 hover:underline text-sm font-medium w-fit">
+        <Link
+          href={href}
+          className="text-blue-600 hover:underline text-sm font-medium w-fit"
+        >
           Read article &rarr;
         </Link>
       </CardFooter>
