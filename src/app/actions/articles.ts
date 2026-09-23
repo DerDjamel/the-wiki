@@ -1,6 +1,16 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import db from "@/database/index";
+import { articles } from "@/database/schema";
+import { ensureUserExists } from "@/database/sync-user";
+import database from "@/database/index";
+import { authorizeUserToEditArticle } from "@/database/auth";
+import { auth } from "@/lib/auth/server";
+
+// Server actions for articles (stubs)
+// TODO: Replace with real database operations when ready
 
 export type CreateArticleInput = {
   title: string;
@@ -16,20 +26,70 @@ export type UpdateArticleInput = {
 };
 
 export async function createArticle(data: CreateArticleInput) {
-  // TODO: Replace with actual database call
+  const session = await auth.getSession();
+
+  if (!session.data?.user) {
+    throw new Error("❌ Unauthorized");
+  }
+
+  await ensureUserExists(session.data.user);
+
   console.log("✨ createArticle called:", data);
-  return { success: true, message: "Article create logged (stub)" };
+
+  const response = await database
+    .insert(articles)
+    .values({
+      title: data.title,
+      content: data.content,
+      slug: `${Date.now()}`,
+      published: true,
+      authorId: session.data.user.id,
+    })
+    .returning({ id: articles.id });
+
+  const articleId = response[0]?.id;
+  return { success: true, message: "Article create logged", id: articleId };
 }
 
 export async function updateArticle(id: string, data: UpdateArticleInput) {
-  // TODO: Replace with actual database update
+  const session = await auth.getSession();
+
+  if (!session.data?.user) {
+    throw new Error("❌ Unauthorized");
+  }
+
+  if (!(await authorizeUserToEditArticle(session.data?.user.id, +id))) {
+    throw new Error("❌ Forbidden");
+  }
+
   console.log("📝 updateArticle called:", { id, ...data });
-  return { success: true, message: `Article ${id} update logged (stub)` };
+
+  const _response = await db
+    .update(articles)
+    .set({
+      title: data.title,
+      content: data.content,
+    })
+    .where(eq(articles.id, +id));
+
+  return { success: true, message: `Article ${id} update logged` };
 }
 
 export async function deleteArticle(id: string) {
-  // TODO: Replace with actual database delete
+  const session = await auth.getSession();
+
+  if (!session.data?.user) {
+    throw new Error("❌ Unauthorized");
+  }
+
+  if (!(await authorizeUserToEditArticle(session.data.user.id, +id))) {
+    throw new Error("❌ Forbidden");
+  }
+
   console.log("🗑️ deleteArticle called:", id);
+
+  const _response = await db.delete(articles).where(eq(articles.id, +id));
+
   return { success: true, message: `Article ${id} delete logged (stub)` };
 }
 
