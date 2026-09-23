@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useActionState } from "react";
-import { signUpWithEmail } from "../actions";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,9 +16,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { signUpWithEmail } from "../actions";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const [state, formAction, isPending] = useActionState(signUpWithEmail, null);
+  const [_state, formAction, isPending] = useActionState(signUpWithEmail, null);
 
   return (
     <Card {...props}>

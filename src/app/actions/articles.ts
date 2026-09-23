@@ -2,11 +2,11 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { authorizeUserToEditArticle } from "@/database/auth";
 import db from "@/database/index";
+import database from "@/database/index";
 import { articles } from "@/database/schema";
 import { ensureUserExists } from "@/database/sync-user";
-import database from "@/database/index";
-import { authorizeUserToEditArticle } from "@/database/auth";
 import { auth } from "@/lib/auth/server";
 
 // Server actions for articles (stubs)
